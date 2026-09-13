@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Assignments(){return <ModulePage title="Assignments" sub="Create and manage class assignments."/>}
