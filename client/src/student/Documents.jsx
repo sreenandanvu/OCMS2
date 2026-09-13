@@ -1,1 +1,0 @@
-import ModulePage from '../components/ModulePage'; export default function Documents(){return <ModulePage title="Documents & ID" sub="Access your college documents and identity card."/>}

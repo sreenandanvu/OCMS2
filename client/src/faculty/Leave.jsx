@@ -1,1 +1,0 @@
-import ModulePage from '../components/ModulePage'; export default function Leave(){return <ModulePage title="My Leave" sub="Apply for and track faculty leave."/>}

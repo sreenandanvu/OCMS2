@@ -1,1 +1,80 @@
-import React,{useEffect,useState} from 'react'; import {api} from '../services/api'; import {Card,Table,Empty} from './UI'; export default function CrudTable({title,endpoint,fields=[]}){const[rows,setRows]=useState([]),[error,setError]=useState('');const load=()=>api(endpoint).then(setRows).catch(e=>setError(e.message));useEffect(load,[]);return <Card><div className="section-title"><div><b>{title}</b><small>Manage official records.</small></div></div>{error?<div className="error">{error}</div>:rows.length?<Table headers={[...fields.map(x=>x[1]),'Actions']} rows={rows.map(r=>[...fields.map(x=>r[x[0]]||'—'),<button className="link">Edit</button>])}/>:<Empty/>}</Card>}
+import React from "react";
+import Table from "./Table";
+import Empty from "./Empty";
+import Loading from "./Loading";
+import ErrorBox from "./ErrorBox";
+
+export default function CrudTable({
+  columns = [],
+  data = [],
+  loading = false,
+  error = "",
+  onRetry,
+  onEdit,
+  onDelete,
+  emptyTitle = "No records found",
+  emptyMessage = "There are no records to display.",
+  editLabel = "Edit",
+  deleteLabel = "Delete",
+}) {
+  if (loading) {
+    return <Loading message="Loading records..." />;
+  }
+
+  if (error) {
+    return (
+      <ErrorBox
+        message={error}
+        onRetry={onRetry}
+      />
+    );
+  }
+
+  if (!data.length) {
+    return (
+      <Empty
+        title={emptyTitle}
+        message={emptyMessage}
+      />
+    );
+  }
+
+  const headers = [
+    ...columns.map((column) => column.label),
+    "Actions",
+  ];
+
+  const rows = data.map((item) => [
+    ...columns.map((column) => {
+      if (typeof column.render === "function") {
+        return column.render(item);
+      }
+
+      return item[column.key] ?? "-";
+    }),
+
+    <div className="table-actions" key={item._id || item.id}>
+      {onEdit && (
+        <button
+          type="button"
+          className="table-action edit"
+          onClick={() => onEdit(item)}
+        >
+          {editLabel}
+        </button>
+      )}
+
+      {onDelete && (
+        <button
+          type="button"
+          className="table-action delete"
+          onClick={() => onDelete(item)}
+        >
+          {deleteLabel}
+        </button>
+      )}
+    </div>,
+  ]);
+
+  return <Table headers={headers} rows={rows} />;
+}

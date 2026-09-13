@@ -1,1 +1,0 @@
-import ModulePage from '../components/ModulePage'; export default function Dashboard(){return <ModulePage title="Admin Dashboard" sub="Overview of college operations."/>}

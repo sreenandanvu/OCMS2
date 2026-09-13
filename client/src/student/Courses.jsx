@@ -1,1 +1,0 @@
-import ModulePage from '../components/ModulePage'; export default function Courses(){return <ModulePage title="Course Registration" sub="Select and manage your registered subjects."/>}

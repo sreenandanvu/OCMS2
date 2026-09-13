@@ -1,1 +1,13 @@
-export default function Loading(){return <div className="empty">Loading…</div>}
+import React from "react";
+
+export default function Loading({
+  message = "Loading...",
+  fullPage = false,
+}) {
+  return (
+    <div className={fullPage ? "loading full-page" : "loading"}>
+      <div className="loading-spinner" />
+      <span>{message}</span>
+    </div>
+  );
+}
