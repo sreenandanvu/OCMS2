@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Profile(){return <ModulePage title="My Profile" sub="View your student profile."/>}
