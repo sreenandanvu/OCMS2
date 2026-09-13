@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Students(){return <ModulePage title="My Students" sub="View students assigned to your classes."/>}
