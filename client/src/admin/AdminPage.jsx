@@ -1,0 +1,3 @@
+import React from 'react';
+import Dashboard from './Dashboard'; import Students from './Students'; import Faculty from './Faculty'; import AcademicSetup from './AcademicSetup'; import Attendance from './Attendance'; import Examinations from './Examinations'; import Assignments from './Assignments'; import Timetable from './Timetable'; import Reports from './Reports';
+export default function AdminPage({page}){const pages={dashboard:Dashboard,students:Students,faculty:Faculty,academics:AcademicSetup,attendance:Attendance,exams:Examinations,assignments:Assignments,timetable:Timetable,reports:Reports}; const C=pages[page]||Dashboard; return <C/>;}
