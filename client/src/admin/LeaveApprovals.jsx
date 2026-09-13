@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function LeaveApprovals(){return <ModulePage title="Leave Approvals" sub="Review and approve student and faculty leave requests."/>}
