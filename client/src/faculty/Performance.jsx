@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Performance(){return <ModulePage title="Performance" sub="Review class and student performance."/>}
