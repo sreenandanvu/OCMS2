@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Attendance(){return <ModulePage title="Attendance" sub="Record and review attendance for your classes."/>}
