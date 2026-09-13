@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Reports(){return <ModulePage title="Reports" sub="View academic and administrative reports."/>}
