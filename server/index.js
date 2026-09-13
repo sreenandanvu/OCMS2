@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import { connectDB } from "./config/db.js";
 import apiRoutes from "./routes/index.js";
+import patchRoutes from "./routes/patches.js";
 
 dotenv.config();
 
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 */
 
 app.use("/api", apiRoutes);
+app.use("/api", patchRoutes);
 
 /*
 |--------------------------------------------------------------------------
