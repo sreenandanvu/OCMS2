@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Leave(){return <ModulePage title="Leave Application" sub="Apply for leave and track approval status."/>}
