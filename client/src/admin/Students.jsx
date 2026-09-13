@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Students(){return <ModulePage title="Students" sub="Manage student records."/>}
