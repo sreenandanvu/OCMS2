@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Examinations(){return <ModulePage title="Examinations" sub="Schedule examinations and manage results."/>}
