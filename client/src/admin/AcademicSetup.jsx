@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function AcademicSetup(){return <ModulePage title="Academic Setup" sub="Manage subjects, sections, teaching assignments and enrollment approvals."/>}
