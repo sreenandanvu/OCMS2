@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Notices(){return <ModulePage title="Notices" sub="View college and department notices."/>}
