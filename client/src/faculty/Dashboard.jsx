@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Dashboard(){return <ModulePage title="Faculty Dashboard" sub="Overview of your academic work."/>}
