@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Faculty(){return <ModulePage title="Faculty" sub="Manage faculty records and assignments."/>}
