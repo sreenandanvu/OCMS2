@@ -1,0 +1,1 @@
+export default function ConfirmModal({message='Are you sure?',onConfirm,onCancel}){return <div className="modal"><div className="card"><p>{message}</p><button className="secondary" onClick={onCancel}>Cancel</button> <button className="primary" onClick={onConfirm}>Confirm</button></div></div>}
