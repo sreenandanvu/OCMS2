@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Timetable(){return <ModulePage title="My Timetable" sub="View your weekly teaching timetable."/>}
