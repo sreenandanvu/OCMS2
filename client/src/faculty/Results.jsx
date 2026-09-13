@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Results(){return <ModulePage title="Marks & Results" sub="Enter and publish student marks."/>}
