@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Attendance(){return <ModulePage title="My Attendance" sub="View your attendance by subject and date."/>}
