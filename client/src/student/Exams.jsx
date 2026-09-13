@@ -1,0 +1,1 @@
+import ModulePage from '../components/ModulePage'; export default function Exams(){return <ModulePage title="Exams & Results" sub="View examination schedules, marks and results."/>}
