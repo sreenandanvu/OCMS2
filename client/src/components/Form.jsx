@@ -1,0 +1,1 @@
+import React from 'react'; export default function Form({fields=[],value={},onChange=()=>{},onSubmit=()=>{}}){return <form onSubmit={onSubmit}>{fields.map(([key,label,type='text'])=><label key={key}>{label}<input type={type} value={value[key]||''} onChange={e=>onChange({...value,[key]:e.target.value})}/></label>)}<button className="primary">Save</button></form>}
