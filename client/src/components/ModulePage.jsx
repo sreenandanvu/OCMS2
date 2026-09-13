@@ -1,0 +1,1 @@
+import React from 'react'; import {PageHeader,Card,Empty} from './UI'; export default function ModulePage({title,sub}){return <><PageHeader title={title} sub={sub||`Manage ${title.toLowerCase()}.`}/><Card><Empty text={`The ${title} module is ready for implementation.`}/></Card></>}
