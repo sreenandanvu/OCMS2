@@ -1,0 +1,190 @@
+/*
+  Shell layout fixes.
+  Keeps the existing OCMS UI/design; this only supplies the
+  class-specific styles used by Shell.jsx.
+*/
+
+.top-header {
+  height: 82px;
+  background: #fff;
+  border-bottom: 1px solid #e7e9f0;
+  padding: 17px 36px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-title {
+  min-width: 0;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #8a91a1;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.breadcrumb span {
+  color: #c2c6d0;
+}
+
+.header-title h1 {
+  margin: 3px 0 0;
+  font-size: 25px;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #182033;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.role-pill {
+  background: #f0efff;
+  color: #5e55ef;
+  border-radius: 20px;
+  padding: 9px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.header-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eeecff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  flex-shrink: 0;
+}
+
+.header-user-info {
+  min-width: 0;
+}
+
+.header-user-info strong {
+  display: block;
+  color: #293044;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.header-user-info small {
+  display: block;
+  margin-top: 3px;
+  color: #7c8394;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eeecff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.profile-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-info b {
+  display: block;
+  font-size: 13px;
+  color: #293044;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-info small {
+  display: block;
+  color: #788096;
+  font-size: 11px;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-item {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: 11px;
+  color: #657087;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.nav-item:hover {
+  background: #f6f6fa;
+  color: #4f46e5;
+}
+
+.nav-item.active {
+  background: #eeecff;
+  color: #5c52ee;
+  font-weight: 700;
+}
+
+.logout-button {
+  width: 100%;
+  border: 1px solid #dfe2e9;
+  background: #fff;
+  color: #657087;
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background: #f7f7fa;
+}
+
+@media (max-width: 900px) {
+  .top-header {
+    padding: 17px 20px;
+  }
+
+  .header-user-info {
+    display: none;
+  }
+}
