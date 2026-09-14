@@ -20,7 +20,6 @@ import { get, post, put, remove } from "../services/api";
 import Loading from "../components/Loading";
 import ErrorBox from "../components/ErrorBox";
 import Empty from "../components/Empty";
-import ConfirmModal from "../components/ConfirmModal";
 
 const ITEMS_PER_PAGE = 7;
 
@@ -329,7 +328,7 @@ export default function Timetable() {
   // ==========================================================
 
   async function handleDelete() {
-    if (!deleteItem) return;
+    if (!deleteItem || deleting) return;
 
     const id =
       deleteItem._id ||
@@ -339,8 +338,6 @@ export default function Timetable() {
       setError(
         "Unable to delete this timetable entry because its ID is missing."
       );
-
-      setDeleteItem(null);
       return;
     }
 
@@ -367,6 +364,7 @@ export default function Timetable() {
         err.message ||
           "Unable to delete timetable entry."
       );
+      // Keep the confirmation popup open when deletion fails.
     } finally {
       setDeleting(false);
     }
@@ -1303,29 +1301,155 @@ export default function Timetable() {
       ======================================================= */}
 
       {deleteItem && (
-        <ConfirmModal
-          title="Delete Class Schedule"
-          message={`Are you sure you want to delete the ${
-            deleteItem.subject ||
-            "selected class"
-          } scheduled on ${
-            deleteItem.day ||
-            "this day"
-          }? This action cannot be undone.`}
-          confirmText={
-            deleting
-              ? "Deleting..."
-              : "Delete"
-          }
-          cancelText="Cancel"
-          onConfirm={handleDelete}
-          onCancel={() => {
-            if (!deleting) {
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+          onClick={(e) => {
+            if (
+              e.target === e.currentTarget &&
+              !deleting
+            ) {
               setDeleteItem(null);
+              setError("");
             }
           }}
-          danger
-        />
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-timetable-title"
+          >
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+              <Trash2 size={22} />
+            </div>
+
+            <h3
+              id="delete-timetable-title"
+              className="mt-4 text-xl font-bold text-slate-900"
+            >
+              Delete Class Schedule?
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Are you sure you want to delete this timetable entry?
+              <br />
+              This action cannot be undone.
+            </p>
+
+            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Subject
+                  </p>
+                  <p className="mt-1 truncate text-sm font-semibold text-slate-800">
+                    {deleteItem.subject || "—"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Day
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {deleteItem.day || "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Period
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {deleteItem.period || "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Course
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {deleteItem.course || "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Semester
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {deleteItem.semester || "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Section
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {deleteItem.section || "—"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Room
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {deleteItem.room || "—"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!deleting) {
+                    setDeleteItem(null);
+                    setError("");
+                  }
+                }}
+                disabled={deleting}
+                className="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {deleting ? (
+                  <>
+                    <RefreshCw
+                      size={15}
+                      className="animate-spin"
+                    />
+                    Deleting...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={15} />
+                    Delete Class
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
     </div>

@@ -11,7 +11,6 @@ import {
   remove,
 } from "../services/api";
 
-import ConfirmModal from "../components/ConfirmModal";
 
 // =====================================================
 // DEFAULT STUDENT
@@ -26,6 +25,7 @@ const emptyStudent = {
   section: "A",
   phone: "",
 };
+
 
 // =====================================================
 // FORM FIELDS
@@ -107,11 +107,13 @@ const studentFields = [
   },
 ];
 
+
 // =====================================================
 // ROWS PER PAGE
 // =====================================================
 
 const ROWS_PER_PAGE = 7;
+
 
 // =====================================================
 // MAIN COMPONENT
@@ -141,6 +143,7 @@ export default function Students() {
   const [editingStudent, setEditingStudent] =
     useState(null);
 
+  // Student selected for delete confirmation
   const [deleteStudent, setDeleteStudent] =
     useState(null);
 
@@ -148,6 +151,7 @@ export default function Students() {
     useState({
       ...emptyStudent,
     });
+
 
   // ===================================================
   // LOAD STUDENTS
@@ -169,7 +173,6 @@ export default function Students() {
 
       setStudents(data);
 
-      // Make sure page doesn't become invalid
       setCurrentPage(1);
     } catch (err) {
       setError(
@@ -181,9 +184,11 @@ export default function Students() {
     }
   }
 
+
   useEffect(() => {
     loadStudents();
   }, []);
+
 
   // ===================================================
   // SEARCH
@@ -216,6 +221,7 @@ export default function Students() {
     );
   }, [students, search]);
 
+
   // ===================================================
   // PAGINATION
   // ===================================================
@@ -228,7 +234,7 @@ export default function Students() {
     )
   );
 
-  // Keep page valid when search/filter changes
+
   useEffect(() => {
     if (currentPage > totalPages) {
       setCurrentPage(totalPages);
@@ -237,6 +243,7 @@ export default function Students() {
     currentPage,
     totalPages,
   ]);
+
 
   const startIndex =
     (currentPage - 1) *
@@ -250,6 +257,7 @@ export default function Students() {
       startIndex,
       endIndex
     );
+
 
   // ===================================================
   // ADD MODAL
@@ -265,6 +273,7 @@ export default function Students() {
     setShowAddModal(true);
   }
 
+
   function closeAddModal() {
     if (saving) return;
 
@@ -276,6 +285,7 @@ export default function Students() {
 
     setFormError("");
   }
+
 
   // ===================================================
   // EDIT MODAL
@@ -301,6 +311,7 @@ export default function Students() {
     setShowEditModal(true);
   }
 
+
   function closeEditModal() {
     if (saving) return;
 
@@ -313,6 +324,7 @@ export default function Students() {
 
     setFormError("");
   }
+
 
   // ===================================================
   // FORM CHANGE
@@ -327,6 +339,7 @@ export default function Students() {
       [name]: value,
     }));
   }
+
 
   // ===================================================
   // SAVE STUDENT
@@ -346,6 +359,7 @@ export default function Students() {
     };
 
     try {
+
       // ===============================================
       // EDIT
       // ===============================================
@@ -354,6 +368,12 @@ export default function Students() {
         const id =
           editingStudent._id ||
           editingStudent.id;
+
+        if (!id) {
+          throw new Error(
+            "Student ID is missing."
+          );
+        }
 
         const response =
           await put(
@@ -409,6 +429,7 @@ export default function Students() {
 
         closeAddModal();
       }
+
     } catch (err) {
       setFormError(
         err.message ||
@@ -419,12 +440,36 @@ export default function Students() {
     }
   }
 
+
+  // ===================================================
+  // OPEN DELETE POPUP
+  // ===================================================
+
+  function openDeleteModal(student) {
+    if (deleting) return;
+
+    setDeleteStudent(student);
+    setError("");
+  }
+
+
+  // ===================================================
+  // CLOSE DELETE POPUP
+  // ===================================================
+
+  function closeDeleteModal() {
+    if (deleting) return;
+
+    setDeleteStudent(null);
+  }
+
+
   // ===================================================
   // DELETE STUDENT
   // ===================================================
 
   async function handleDelete() {
-    if (!deleteStudent) {
+    if (!deleteStudent || deleting) {
       return;
     }
 
@@ -432,13 +477,26 @@ export default function Students() {
       deleteStudent._id ||
       deleteStudent.id;
 
+    if (!id) {
+      setError(
+        "Unable to delete student: Student ID is missing."
+      );
+
+      setDeleteStudent(null);
+      return;
+    }
+
     setDeleting(true);
+    setError("");
 
     try {
+      // DELETE /api/students/:id
       await remove(
         `/students/${id}`
       );
 
+      // Remove the deleted student
+      // immediately from the UI.
       setStudents(
         (current) =>
           current.filter(
@@ -450,18 +508,20 @@ export default function Students() {
           )
       );
 
+      // Close popup after successful deletion.
       setDeleteStudent(null);
+
     } catch (err) {
       setError(
         err.message ||
           "Unable to delete student."
       );
 
-      setDeleteStudent(null);
     } finally {
       setDeleting(false);
     }
   }
+
 
   // ===================================================
   // EXPORT CSV
@@ -497,6 +557,7 @@ export default function Students() {
         ]
       );
 
+
     function escapeCSV(value) {
       const text =
         String(value ?? "");
@@ -515,6 +576,7 @@ export default function Students() {
       return text;
     }
 
+
     const csv = [
       headers,
       ...rows,
@@ -526,6 +588,7 @@ export default function Students() {
       )
       .join("\n");
 
+
     const blob =
       new Blob(
         ["\ufeff" + csv],
@@ -535,10 +598,12 @@ export default function Students() {
         }
       );
 
+
     const url =
       URL.createObjectURL(
         blob
       );
+
 
     const link =
       document.createElement(
@@ -563,21 +628,6 @@ export default function Students() {
     URL.revokeObjectURL(url);
   }
 
-  // ===================================================
-  // MODAL BACKDROP
-  // ===================================================
-
-  function handleBackdrop(
-    event,
-    closeFunction
-  ) {
-    if (
-      event.target ===
-      event.currentTarget
-    ) {
-      closeFunction();
-    }
-  }
 
   // ===================================================
   // PAGE NUMBERS
@@ -596,6 +646,7 @@ export default function Students() {
 
     return pages;
   }
+
 
   // ===================================================
   // RENDER
@@ -621,6 +672,7 @@ export default function Students() {
             information.
           </p>
         </div>
+
 
         <button
           type="button"
@@ -655,6 +707,7 @@ export default function Students() {
         </button>
       </div>
 
+
       {/* =================================================
           STUDENT RECORD PANEL
       ================================================= */}
@@ -670,6 +723,7 @@ export default function Students() {
           <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
 
             {/* TITLE */}
+
             <div>
               <h3 className="text-lg font-bold text-slate-900">
                 Student Records
@@ -690,10 +744,13 @@ export default function Students() {
               </p>
             </div>
 
+
             {/* ACTIONS */}
+
             <div className="flex flex-col gap-3 sm:flex-row">
 
               {/* SEARCH */}
+
               <div className="relative sm:w-80">
 
                 <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
@@ -755,7 +812,9 @@ export default function Students() {
                 )}
               </div>
 
+
               {/* EXPORT */}
+
               <button
                 type="button"
                 onClick={
@@ -789,7 +848,9 @@ export default function Students() {
                 ↓ Export CSV
               </button>
 
+
               {/* REFRESH */}
+
               <button
                 type="button"
                 onClick={
@@ -823,6 +884,7 @@ export default function Students() {
           </div>
         </div>
 
+
         {/* =================================================
             ERROR
         ================================================= */}
@@ -834,7 +896,7 @@ export default function Students() {
 
               <div>
                 <p className="text-sm font-bold text-red-800">
-                  Unable to load students
+                  Unable to process request
                 </p>
 
                 <p className="mt-1 text-sm text-red-600">
@@ -844,9 +906,10 @@ export default function Students() {
 
               <button
                 type="button"
-                onClick={
-                  loadStudents
-                }
+                onClick={() => {
+                  setError("");
+                  loadStudents();
+                }}
                 className="
                   rounded-lg
                   bg-red-600
@@ -863,6 +926,7 @@ export default function Students() {
             </div>
           </div>
         )}
+
 
         {/* =================================================
             LOADING
@@ -890,6 +954,7 @@ export default function Students() {
               )
             )}
           </div>
+
         ) : filteredStudents.length ===
           0 ? (
 
@@ -942,6 +1007,7 @@ export default function Students() {
               </button>
             )}
           </div>
+
         ) : (
 
           /* =================================================
@@ -982,10 +1048,12 @@ export default function Students() {
                 </tr>
               </thead>
 
+
               <tbody className="divide-y divide-slate-100">
 
                 {paginatedStudents.map(
                   (student) => {
+
                     const id =
                       student._id ||
                       student.id;
@@ -1006,6 +1074,7 @@ export default function Students() {
                       >
 
                         {/* STUDENT */}
+
                         <td className="px-6 py-4">
 
                           <div className="flex items-center gap-3">
@@ -1040,9 +1109,12 @@ export default function Students() {
 
                             </div>
                           </div>
+
                         </td>
 
+
                         {/* ROLL */}
+
                         <td className="px-6 py-4">
 
                           <span className="
@@ -1060,20 +1132,26 @@ export default function Students() {
 
                         </td>
 
+
                         {/* COURSE */}
+
                         <td className="px-6 py-4 text-sm font-medium text-slate-700">
                           {student.course ||
                             "-"}
                         </td>
 
+
                         {/* SEMESTER */}
+
                         <td className="px-6 py-4 text-sm text-slate-600">
                           Semester{" "}
                           {student.semester ||
                             "-"}
                         </td>
 
+
                         {/* SECTION */}
+
                         <td className="px-6 py-4">
 
                           <span className="
@@ -1093,12 +1171,15 @@ export default function Students() {
 
                         </td>
 
+
                         {/* ACTIONS */}
+
                         <td className="px-6 py-4">
 
                           <div className="flex justify-end gap-2">
 
                             {/* EDIT */}
+
                             <button
                               type="button"
                               onClick={() =>
@@ -1125,14 +1206,17 @@ export default function Students() {
                               ✏ Edit
                             </button>
 
+
                             {/* DELETE */}
+
                             <button
                               type="button"
                               onClick={() =>
-                                setDeleteStudent(
+                                openDeleteModal(
                                   student
                                 )
                               }
+                              disabled={deleting}
                               className="
                                 rounded-lg
                                 border
@@ -1145,12 +1229,15 @@ export default function Students() {
                                 text-red-600
                                 transition
                                 hover:bg-red-50
+                                disabled:cursor-not-allowed
+                                disabled:opacity-50
                               "
                             >
                               🗑 Delete
                             </button>
 
                           </div>
+
                         </td>
 
                       </tr>
@@ -1163,6 +1250,7 @@ export default function Students() {
           </div>
         )}
 
+
         {/* =================================================
             PAGINATION
         ================================================= */}
@@ -1170,6 +1258,7 @@ export default function Students() {
         {!loading &&
           filteredStudents.length >
             0 && (
+
             <div className="
               flex
               flex-col
@@ -1185,6 +1274,7 @@ export default function Students() {
             ">
 
               {/* RANGE */}
+
               <div className="text-sm text-slate-500">
 
                 Showing{" "}
@@ -1211,13 +1301,18 @@ export default function Students() {
                 </span>
 
                 {" students"}
+
               </div>
 
+
               {/* PAGINATION BUTTONS */}
+
               {totalPages > 1 && (
+
                 <div className="flex items-center gap-1">
 
                   {/* PREVIOUS */}
+
                   <button
                     type="button"
                     disabled={
@@ -1256,7 +1351,9 @@ export default function Students() {
                     ←
                   </button>
 
+
                   {/* PAGE NUMBERS */}
+
                   {getPageNumbers().map(
                     (page) => (
                       <button
@@ -1291,7 +1388,9 @@ export default function Students() {
                     )
                   )}
 
+
                   {/* NEXT */}
+
                   <button
                     type="button"
                     disabled={
@@ -1332,9 +1431,12 @@ export default function Students() {
 
                 </div>
               )}
+
             </div>
           )}
+
       </div>
+
 
       {/* =================================================
           ADD STUDENT MODAL
@@ -1355,6 +1457,7 @@ export default function Students() {
         />
       )}
 
+
       {/* =================================================
           EDIT STUDENT MODAL
       ================================================= */}
@@ -1374,37 +1477,305 @@ export default function Students() {
         />
       )}
 
+
       {/* =================================================
-          DELETE CONFIRMATION
+          DELETE CONFIRMATION POPUP
       ================================================= */}
 
-      <ConfirmModal
-        open={Boolean(
-          deleteStudent
-        )}
-        title="Delete Student?"
-        message={
-          deleteStudent
-            ? `Are you sure you want to delete ${deleteStudent.name}? This action cannot be undone.`
-            : ""
-        }
-        confirmText="Delete Student"
-        cancelText="Cancel"
-        onConfirm={
-          handleDelete
-        }
-        onCancel={() =>
-          setDeleteStudent(null)
-        }
-        loading={deleting}
-      />
+      {deleteStudent && (
+        <DeleteConfirmationModal
+          student={deleteStudent}
+          loading={deleting}
+          onConfirm={handleDelete}
+          onCancel={closeDeleteModal}
+        />
+      )}
 
     </div>
   );
 }
 
+
 // =====================================================
-// STUDENT MODAL
+// DELETE CONFIRMATION MODAL
+// =====================================================
+
+function DeleteConfirmationModal({
+  student,
+  loading,
+  onConfirm,
+  onCancel,
+}) {
+  return (
+    <div
+      className="
+        fixed
+        inset-0
+        z-[100]
+        flex
+        items-center
+        justify-center
+        bg-slate-950/50
+        p-4
+        backdrop-blur-sm
+      "
+      onMouseDown={(event) => {
+        if (
+          event.target ===
+            event.currentTarget &&
+          !loading
+        ) {
+          onCancel();
+        }
+      }}
+    >
+
+      <div
+        className="
+          w-full
+          max-w-md
+          overflow-hidden
+          rounded-2xl
+          bg-white
+          shadow-2xl
+        "
+        onMouseDown={(event) =>
+          event.stopPropagation()
+        }
+      >
+
+        {/* HEADER */}
+
+        <div className="
+          flex
+          items-start
+          justify-between
+          border-b
+          border-slate-200
+          px-6
+          py-5
+        ">
+
+          <div className="flex items-center gap-3">
+
+            <div className="
+              flex
+              h-11
+              w-11
+              shrink-0
+              items-center
+              justify-center
+              rounded-full
+              bg-red-100
+              text-xl
+            ">
+              🗑
+            </div>
+
+            <div>
+
+              <h3 className="text-lg font-bold text-slate-900">
+                Delete Student?
+              </h3>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Confirm student deletion
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={loading}
+            className="
+              flex
+              h-9
+              w-9
+              items-center
+              justify-center
+              rounded-lg
+              text-xl
+              text-slate-400
+              transition
+              hover:bg-slate-100
+              hover:text-slate-700
+              disabled:cursor-not-allowed
+              disabled:opacity-40
+            "
+            aria-label="Close"
+          >
+            ×
+          </button>
+
+        </div>
+
+
+        {/* CONTENT */}
+
+        <div className="px-6 py-6">
+
+          <p className="text-sm leading-6 text-slate-600">
+            Are you sure you want to delete
+            this student?
+          </p>
+
+
+          {/* STUDENT INFO */}
+
+          <div className="
+            mt-4
+            rounded-xl
+            border
+            border-red-100
+            bg-red-50
+            p-4
+          ">
+
+            <div className="flex items-center gap-3">
+
+              <div className="
+                flex
+                h-10
+                w-10
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-violet-100
+                text-sm
+                font-bold
+                text-violet-700
+              ">
+                {student.name
+                  ?.charAt(0)
+                  ?.toUpperCase() || "S"}
+              </div>
+
+
+              <div className="min-w-0">
+
+                <p className="truncate text-sm font-bold text-slate-900">
+                  {student.name ||
+                    "Unknown Student"}
+                </p>
+
+                <p className="mt-0.5 truncate text-xs text-slate-500">
+                  {student.rollNo ||
+                    "No roll number"}
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <p className="mt-4 text-xs leading-5 text-red-600">
+            This action cannot be undone.
+            The student record will be permanently
+            removed.
+          </p>
+
+        </div>
+
+
+        {/* BUTTONS */}
+
+        <div className="
+          flex
+          flex-col-reverse
+          gap-3
+          border-t
+          border-slate-100
+          px-6
+          py-5
+          sm:flex-row
+          sm:justify-end
+        ">
+
+          <button
+            type="button"
+            onClick={onCancel}
+            disabled={loading}
+            className="
+              rounded-xl
+              border
+              border-slate-200
+              bg-white
+              px-5
+              py-2.5
+              text-sm
+              font-semibold
+              text-slate-700
+              transition
+              hover:bg-slate-50
+              disabled:cursor-not-allowed
+              disabled:opacity-50
+            "
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="button"
+            onClick={onConfirm}
+            disabled={loading}
+            className="
+              inline-flex
+              items-center
+              justify-center
+              gap-2
+              rounded-xl
+              bg-red-600
+              px-5
+              py-2.5
+              text-sm
+              font-semibold
+              text-white
+              shadow-sm
+              transition
+              hover:bg-red-700
+              disabled:cursor-not-allowed
+              disabled:opacity-60
+            "
+          >
+            {loading ? (
+              <>
+                <span className="
+                  h-4
+                  w-4
+                  animate-spin
+                  rounded-full
+                  border-2
+                  border-white/40
+                  border-t-white
+                " />
+
+                Deleting...
+              </>
+            ) : (
+              <>
+                🗑 Delete Student
+              </>
+            )}
+          </button>
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+
+// =====================================================
+// STUDENT ADD / EDIT MODAL
 // =====================================================
 
 function StudentModal({
@@ -1419,15 +1790,17 @@ function StudentModal({
   error,
   submitText,
 }) {
+
   function handleBackdrop(event) {
     if (
       event.target ===
-      event.currentTarget &&
+        event.currentTarget &&
       !loading
     ) {
       onClose();
     }
   }
+
 
   return (
     <div
@@ -1463,6 +1836,7 @@ function StudentModal({
       >
 
         {/* MODAL HEADER */}
+
         <div className="
           flex
           items-start
@@ -1474,6 +1848,7 @@ function StudentModal({
         ">
 
           <div>
+
             <h3 className="text-xl font-bold text-slate-900">
               {title}
             </h3>
@@ -1481,7 +1856,9 @@ function StudentModal({
             <p className="mt-1 text-sm text-slate-500">
               {description}
             </p>
+
           </div>
+
 
           <button
             type="button"
@@ -1510,13 +1887,16 @@ function StudentModal({
 
         </div>
 
+
         {/* FORM */}
+
         <form
           onSubmit={onSubmit}
           className="p-6"
         >
 
           {/* ERROR */}
+
           {error && (
             <div className="
               mb-5
@@ -1533,7 +1913,9 @@ function StudentModal({
             </div>
           )}
 
+
           {/* FIELDS */}
+
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
 
             {fields.map(
@@ -1567,6 +1949,7 @@ function StudentModal({
                       font-semibold
                       text-slate-700
                     ">
+
                       {field.label}
 
                       {field.required && (
@@ -1574,10 +1957,13 @@ function StudentModal({
                           *
                         </span>
                       )}
+
                     </label>
+
 
                     {field.type ===
                     "select" ? (
+
                       <select
                         value={
                           value
@@ -1648,7 +2034,9 @@ function StudentModal({
                         )}
 
                       </select>
+
                     ) : (
+
                       <input
                         type={
                           field.type ||
@@ -1691,7 +2079,9 @@ function StudentModal({
                           focus:ring-violet-100
                         "
                       />
+
                     )}
+
                   </div>
                 );
               }
@@ -1699,7 +2089,9 @@ function StudentModal({
 
           </div>
 
+
           {/* BUTTONS */}
+
           <div className="
             mt-6
             flex
@@ -1735,6 +2127,7 @@ function StudentModal({
               Cancel
             </button>
 
+
             <button
               type="submit"
               disabled={loading}
@@ -1759,8 +2152,11 @@ function StudentModal({
             </button>
 
           </div>
+
         </form>
+
       </div>
+
     </div>
   );
 }

@@ -3,7 +3,6 @@ import { get, post, put, remove } from "../services/api";
 import Loading from "../components/Loading";
 import ErrorBox from "../components/ErrorBox";
 import Empty from "../components/Empty";
-import ConfirmModal from "../components/ConfirmModal";
 
 const ITEMS_PER_PAGE = 7;
 
@@ -24,9 +23,11 @@ export default function Assignments() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [error, setError] = useState("");
   const [formError, setFormError] = useState("");
+  const [deleteError, setDeleteError] = useState("");
 
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -237,6 +238,12 @@ export default function Assignments() {
           editingAssignment._id ||
           editingAssignment.id;
 
+        if (!id) {
+          throw new Error(
+            "Invalid assignment ID."
+          );
+        }
+
         const response = await put(
           `/assignments/${id}`,
           payload
@@ -249,7 +256,8 @@ export default function Assignments() {
 
         setAssignments((current) =>
           current.map((item) =>
-            (item._id || item.id) === id
+            String(item._id || item.id) ===
+            String(id)
               ? updated
               : item
           )
@@ -283,16 +291,43 @@ export default function Assignments() {
   }
 
   /* -------------------------------------------------------
+     Open Delete Popup
+  ------------------------------------------------------- */
+
+  function openDeletePopup(item) {
+    setDeleteError("");
+    setDeleteItem(item);
+  }
+
+  function closeDeletePopup() {
+    if (deleting) return;
+
+    setDeleteItem(null);
+    setDeleteError("");
+  }
+
+  /* -------------------------------------------------------
      Delete
   ------------------------------------------------------- */
 
   async function handleDelete() {
-    if (!deleteItem) return;
+    if (!deleteItem || deleting) return;
 
     const id =
       deleteItem._id || deleteItem.id;
 
+    if (!id) {
+      setDeleteError(
+        "Unable to delete assignment: invalid assignment ID."
+      );
+      return;
+    }
+
     try {
+      setDeleting(true);
+      setDeleteError("");
+      setError("");
+
       await remove(
         `/assignments/${id}`
       );
@@ -300,18 +335,25 @@ export default function Assignments() {
       setAssignments((current) =>
         current.filter(
           (item) =>
-            (item._id || item.id) !== id
+            String(item._id || item.id) !==
+            String(id)
         )
       );
 
       setDeleteItem(null);
+      setDeleteError("");
     } catch (err) {
-      setError(
+      console.error(
+        "Delete assignment error:",
+        err
+      );
+
+      setDeleteError(
         err.message ||
           "Unable to delete assignment."
       );
-
-      setDeleteItem(null);
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -383,7 +425,8 @@ export default function Assignments() {
           <button
             type="button"
             onClick={loadAssignments}
-            className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50"
+            disabled={loading}
+            className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
           >
             ↻ Refresh
           </button>
@@ -575,7 +618,7 @@ export default function Assignments() {
                             <button
                               type="button"
                               onClick={() =>
-                                setDeleteItem(
+                                openDeletePopup(
                                   item
                                 )
                               }
@@ -854,19 +897,148 @@ export default function Assignments() {
         </div>
       )}
 
-      {/* Delete Confirmation */}
+      {/* =====================================================
+          DELETE CONFIRMATION POPUP
+      ===================================================== */}
 
       {deleteItem && (
-        <ConfirmModal
-          title="Delete Assignment"
-          message={`Are you sure you want to delete "${deleteItem.title}"? This action cannot be undone.`}
-          confirmText="Delete"
-          cancelText="Cancel"
-          onConfirm={handleDelete}
-          onCancel={() =>
-            setDeleteItem(null)
-          }
-        />
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4"
+          onClick={(e) => {
+            if (
+              e.target === e.currentTarget &&
+              !deleting
+            ) {
+              closeDeletePopup();
+            }
+          }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-assignment-title"
+          >
+            {/* Icon */}
+
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl">
+              🗑️
+            </div>
+
+            {/* Title */}
+
+            <h3
+              id="delete-assignment-title"
+              className="mt-4 text-xl font-bold text-slate-900"
+            >
+              Delete Assignment?
+            </h3>
+
+            {/* Message */}
+
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Are you sure you want to delete{" "}
+              <strong className="text-slate-700">
+                "{deleteItem.title || "this assignment"}"
+              </strong>
+              ?
+              <br />
+              This action cannot be undone.
+            </p>
+
+            {/* Assignment details */}
+
+            <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-xs text-slate-400">
+                    Subject
+                  </p>
+
+                  <p className="mt-1 truncate text-sm font-medium text-slate-700">
+                    {deleteItem.subject || "-"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-slate-400">
+                    Faculty
+                  </p>
+
+                  <p className="mt-1 truncate text-sm font-medium text-slate-700">
+                    {deleteItem.faculty || "-"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-slate-400">
+                    Course
+                  </p>
+
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {deleteItem.course || "-"}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs text-slate-400">
+                    Semester
+                  </p>
+
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {deleteItem.semester
+                      ? `Semester ${deleteItem.semester}`
+                      : "-"}
+                  </p>
+                </div>
+
+                <div className="col-span-2">
+                  <p className="text-xs text-slate-400">
+                    Due Date
+                  </p>
+
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {formatDate(
+                      deleteItem.dueDate
+                    )}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Delete error */}
+
+            {deleteError && (
+              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {deleteError}
+              </div>
+            )}
+
+            {/* Buttons */}
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={closeDeletePopup}
+                disabled={deleting}
+                className="rounded-lg border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {deleting
+                  ? "Deleting..."
+                  : "Delete Assignment"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

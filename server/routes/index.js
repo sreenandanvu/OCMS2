@@ -1697,4 +1697,64 @@ router.delete("/students/:id", async (req, res) => {
   }
 });
 
+router.put("/exams/:id", async (req, res) => {
+  try {
+    const exam = await Examination.findByIdAndUpdate(
+      req.params.id,
+      {
+        name: req.body.name,
+        course: req.body.course,
+        semester: Number(req.body.semester),
+        date: req.body.date,
+        status: req.body.status,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!exam) {
+      return res.status(404).json({
+        message: "Examination not found",
+      });
+    }
+
+    res.json(exam);
+  } catch (error) {
+    console.error("Update examination error:", error);
+
+    res.status(400).json({
+      message:
+        error.message ||
+        "Unable to update examination",
+    });
+  }
+});
+router.delete("/exams/:id", async (req, res) => {
+  try {
+    const exam = await Examination.findByIdAndDelete(req.params.id);
+
+    if (!exam) {
+      return res.status(404).json({
+        message: "Examination not found",
+      });
+    }
+
+    await Result.deleteMany({ exam: req.params.id });
+
+    return res.json({
+      message: "Examination deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete examination error:", error);
+
+    return res.status(400).json({
+      message: error.message || "Unable to delete examination",
+    });
+  }
+});
+
+
+
 export default router;

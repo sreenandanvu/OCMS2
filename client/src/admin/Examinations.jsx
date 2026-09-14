@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import { get, post, put, patch, remove } from "../services/api";
 import Loading from "../components/Loading";
 import Empty from "../components/Empty";
-import ConfirmModal from "../components/ConfirmModal";
 
 const ITEMS_PER_PAGE = 7;
 
@@ -713,8 +712,8 @@ export default function Examinations() {
         error.message ||
           "Unable to delete examination."
       );
-
-      setDeleteExam(null);
+    } finally {
+      setExamSaving(false);
     }
   }
 
@@ -2485,16 +2484,80 @@ export default function Examinations() {
       ================================================= */}
 
       {deleteExam && (
-        <ConfirmModal
-          title="Delete Examination"
-          message={`Are you sure you want to delete "${deleteExam.name}"?`}
-          confirmText="Delete"
-          cancelText="Cancel"
-          onConfirm={handleExamDelete}
-          onCancel={() =>
-            setDeleteExam(null)
-          }
-        />
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4"
+        >
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl">
+              🗑️
+            </div>
+
+            <h3 className="mt-4 text-xl font-bold text-slate-900">
+              Delete Examination?
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Are you sure you want to delete {" "}
+              <strong className="text-slate-700">
+                "{deleteExam.name}"
+              </strong>
+              ?
+              <br />
+              This action cannot be undone.
+            </p>
+
+            <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-medium text-slate-500">Course</span>
+                <span className="text-sm font-semibold text-slate-800">
+                  {deleteExam.course || "-"}
+                </span>
+              </div>
+              <div className="mt-2 flex items-center justify-between gap-3">
+                <span className="text-xs font-medium text-slate-500">Semester</span>
+                <span className="text-sm font-semibold text-slate-800">
+                  Semester {deleteExam.semester || "-"}
+                </span>
+              </div>
+              <div className="mt-2 flex items-center justify-between gap-3">
+                <span className="text-xs font-medium text-slate-500">Date</span>
+                <span className="text-sm font-semibold text-slate-800">
+                  {formatDate(deleteExam.date)}
+                </span>
+              </div>
+            </div>
+
+            {examError && (
+              <div className="mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {examError}
+              </div>
+            )}
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (examSaving) return;
+                  setDeleteExam(null);
+                  setExamError("");
+                }}
+                disabled={examSaving}
+                className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleExamDelete}
+                disabled={examSaving}
+                className="rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {examSaving ? "Deleting..." : "Delete Examination"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

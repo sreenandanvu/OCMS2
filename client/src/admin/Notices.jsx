@@ -3,7 +3,6 @@ import { get, post, put, remove } from "../services/api";
 import Loading from "../components/Loading";
 import ErrorBox from "../components/ErrorBox";
 import Empty from "../components/Empty";
-import ConfirmModal from "../components/ConfirmModal";
 
 const ITEMS_PER_PAGE = 7;
 
@@ -27,6 +26,7 @@ export default function Notices() {
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [error, setError] = useState("");
   const [formError, setFormError] = useState("");
@@ -270,18 +270,26 @@ export default function Notices() {
   ------------------------------------------------------- */
 
   async function handleDelete() {
-    if (!deleteItem) return;
+    if (!deleteItem || deleting) return;
 
     const id =
       deleteItem._id || deleteItem.id;
 
+    if (!id) {
+      setError("Unable to delete notice: invalid notice ID.");
+      return;
+    }
+
     try {
+      setDeleting(true);
+      setError("");
+
       await remove(`/notices/${id}`);
 
       setNotices((current) =>
         current.filter(
           (notice) =>
-            (notice._id || notice.id) !== id
+            String(notice._id || notice.id) !== String(id)
         )
       );
 
@@ -291,8 +299,9 @@ export default function Notices() {
         err.message ||
           "Unable to delete notice."
       );
-
-      setDeleteItem(null);
+      // Keep the popup open so the error is visible.
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -816,19 +825,122 @@ export default function Notices() {
         </div>
       )}
 
-      {/* Delete Confirmation */}
+      {/* Delete Confirmation Popup */}
 
       {deleteItem && (
-        <ConfirmModal
-          title="Delete Notice"
-          message={`Are you sure you want to delete "${deleteItem.title}"? This action cannot be undone.`}
-          confirmText="Delete"
-          cancelText="Cancel"
-          onConfirm={handleDelete}
-          onCancel={() =>
-            setDeleteItem(null)
-          }
-        />
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
+          onClick={(e) => {
+            if (
+              e.target === e.currentTarget &&
+              !deleting
+            ) {
+              setDeleteItem(null);
+              setError("");
+            }
+          }}
+        >
+          <div
+            className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-notice-title"
+          >
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-xl">
+              🗑️
+            </div>
+
+            <h3
+              id="delete-notice-title"
+              className="mt-4 text-xl font-bold text-slate-900"
+            >
+              Delete Notice?
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Are you sure you want to delete{" "}
+              <strong className="text-slate-700">
+                "{deleteItem.title || "this notice"}"
+              </strong>
+              ?
+              <br />
+              This action cannot be undone.
+            </p>
+
+            <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="space-y-3">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Title
+                  </p>
+                  <p className="mt-1 truncate text-sm font-semibold text-slate-800">
+                    {deleteItem.title || "—"}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Audience
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {deleteItem.audience || "Everyone"}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                      Date
+                    </p>
+                    <p className="mt-1 text-sm font-medium text-slate-700">
+                      {formatDate(deleteItem.date)}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+                    Message
+                  </p>
+                  <p className="mt-1 max-h-16 overflow-hidden text-sm leading-5 text-slate-600">
+                    {deleteItem.message || "—"}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                {error}
+              </div>
+            )}
+
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!deleting) {
+                    setDeleteItem(null);
+                    setError("");
+                  }
+                }}
+                disabled={deleting}
+                className="rounded-xl border border-slate-300 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={deleting}
+                className="rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {deleting ? "Deleting..." : "Delete Notice"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
