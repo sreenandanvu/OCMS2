@@ -1,4 +1,5 @@
 import React from "react";
+import "./shell-fix.css";
 import {
   LayoutDashboard,
   Users,
