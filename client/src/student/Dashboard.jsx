@@ -41,7 +41,7 @@ function StatCard({ icon: Icon, label, value, helper, tone }) {
   };
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className={\`flex h-11 w-11 items-center justify-center rounded-xl \${tones[tone]}\`}>
+      <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${tones[tone]}`}>
         <Icon size={20} />
       </div>
       <p className="mt-5 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
@@ -234,7 +234,7 @@ export default function Dashboard({ onNavigate }) {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard icon={ClipboardCheck} label="My attendance" value={\`\${attendancePercentage}%\`} helper={attendancePercentage >= 75 ? "Above the 75% threshold" : \`\${classesNeeded} more attended class(es) to reach 75%\`} tone={attendancePercentage >= 75 ? "emerald" : "amber"} />
+        <StatCard icon={ClipboardCheck} label="My attendance" value={`${attendancePercentage}%`} helper={attendancePercentage >= 75 ? "Above the 75% threshold" : `${classesNeeded} more attended class(es) to reach 75%`} tone={attendancePercentage >= 75 ? "emerald" : "amber"} />
         <StatCard icon={ClipboardList} label="Assignments" value={assignments.length} helper="Available in your workspace" tone="violet" />
         <StatCard icon={CalendarDays} label="Upcoming exams" value={upcomingExams.length} helper="Scheduled academic events" tone="blue" />
         <StatCard icon={Trophy} label="Results" value={myResults.length} helper="Published/available records" tone="amber" />
@@ -254,7 +254,7 @@ export default function Dashboard({ onNavigate }) {
 
           <div className="mt-6 flex flex-col gap-5 sm:flex-row sm:items-center">
             <div className="relative flex h-36 w-36 shrink-0 items-center justify-center rounded-full border-[12px] border-slate-100">
-              <div className="absolute inset-[-12px] rounded-full border-[12px] border-emerald-500 border-l-transparent border-b-transparent" style={{ transform: \`rotate(\${Math.min(360, Math.max(0, attendancePercentage * 3.6))}deg)\` }} />
+              <div className="absolute inset-[-12px] rounded-full border-[12px] border-emerald-500 border-l-transparent border-b-transparent" style={{ transform: `rotate(${Math.min(360, Math.max(0, attendancePercentage * 3.6))}deg)` }} />
               <div className="text-center">
                 <p className="text-3xl font-black text-slate-950">{attendancePercentage}%</p>
                 <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">Overall</p>
@@ -262,7 +262,7 @@ export default function Dashboard({ onNavigate }) {
             </div>
 
             <div className="min-w-0 flex-1">
-              <div className={\`rounded-xl border p-4 \${attendancePercentage >= 75 ? "border-emerald-100 bg-emerald-50" : "border-amber-100 bg-amber-50"}\`}>
+              <div className={`rounded-xl border p-4 ${attendancePercentage >= 75 ? "border-emerald-100 bg-emerald-50" : "border-amber-100 bg-amber-50"}`}>
                 <div className="flex items-start gap-3">
                   {attendancePercentage >= 75 ? (
                     <CheckCircle2 className="mt-0.5 shrink-0 text-emerald-600" size={18} />
@@ -274,7 +274,7 @@ export default function Dashboard({ onNavigate }) {
                     <p className="mt-1 text-xs leading-5 text-slate-500">
                       {attendancePercentage >= 75
                         ? "Keep attending regularly to maintain a safe attendance margin."
-                        : \`Attend your next \${classesNeeded} class(es) to reach the 75% threshold, based on current records.\`}
+                        : `Attend your next ${classesNeeded} class(es) to reach the 75% threshold, based on current records.`}
                     </p>
                   </div>
                 </div>
