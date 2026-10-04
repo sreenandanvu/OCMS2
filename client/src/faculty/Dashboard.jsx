@@ -150,7 +150,7 @@ export default function Dashboard({ onNavigate }) {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
           [Users, "My Students", students.length, "Assigned student records", "students", "blue"],
-          [ClipboardCheck, "Attendance", \`\${attendancePercentage}%\`, "Across recorded sessions", "attendance", "emerald"],
+          [ClipboardCheck, "Attendance", `${attendancePercentage}%`, "Across recorded sessions", "attendance", "emerald"],
           [ClipboardList, "Assignments", assignments.length, "Available assignment records", "assignments", "violet"],
           [BookOpen, "Subjects", subjects.length, "Subjects in current records", "assignments", "amber"],
         ].map(([Icon, label, value, helper, page, tone]) => {
@@ -167,7 +167,7 @@ export default function Dashboard({ onNavigate }) {
               onClick={() => onNavigate?.(page)}
               className="rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg"
             >
-              <div className={\`flex h-11 w-11 items-center justify-center rounded-xl \${toneMap[tone]}\`}>
+              <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${toneMap[tone]}`}>
                 <Icon size={20} />
               </div>
               <p className="mt-5 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">{label}</p>
@@ -218,7 +218,7 @@ export default function Dashboard({ onNavigate }) {
           <p className="mt-4 text-5xl font-black tracking-tight">{attendancePercentage}%</p>
           <p className="mt-2 text-xs leading-5 text-slate-400">Based on all attendance records currently returned by the OCMS API.</p>
           <div className="mt-6 h-2 overflow-hidden rounded-full bg-white/10">
-            <div className="h-full rounded-full bg-emerald-400" style={{ width: \`\${Math.min(100, attendancePercentage)}%\` }} />
+            <div className="h-full rounded-full bg-emerald-400" style={{ width: `${Math.min(100, attendancePercentage)}%` }} />
           </div>
           <button type="button" onClick={() => onNavigate?.("attendance")} className="mt-5 inline-flex items-center gap-1 text-xs font-bold text-white">
             Open attendance
