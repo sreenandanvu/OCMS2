@@ -8,10 +8,10 @@ import Exams from "./Exams";
 import Timetable from "./Timetable";
 import Notices from "./Notices";
 
-export default function StudentPage({ page }) {
+export default function StudentPage({ page, onNavigate }) {
   switch (page) {
     case "dashboard":
-      return <Dashboard />;
+      return <Dashboard onNavigate={onNavigate} />;
 
     case "profile":
       return <Profile />;
@@ -32,6 +32,6 @@ export default function StudentPage({ page }) {
       return <Notices />;
 
     default:
-      return <Dashboard />;
+      return <Dashboard onNavigate={onNavigate} />;
   }
 }
