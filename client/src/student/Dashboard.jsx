@@ -192,7 +192,13 @@ export default function Dashboard({ onNavigate }) {
     [exams]
   );
 
-  const recentResults = useMemo(() => myResults.slice(0, 4), [myResults]);
+  const recentResults = useMemo(
+    () =>
+      myResults
+        .filter((item) => item.published !== false)
+        .slice(0, 4),
+    [myResults]
+  );
 
   const recentNotices = useMemo(
     () =>
