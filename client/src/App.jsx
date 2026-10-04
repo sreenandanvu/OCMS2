@@ -54,21 +54,29 @@ const roleVisuals = {
 export default function App() {
   const [signed, setSigned] = useState(() => {
     try {
-      return JSON.parse(localStorage.getItem("ocms_user") || "null");
+      return JSON.parse(
+        localStorage.getItem("ocms_user") ||
+        sessionStorage.getItem("ocms_user") ||
+        "null"
+      );
     } catch {
       return null;
     }
   });
   const [page, setPage] = useState("dashboard");
 
-  function handleLogin(user) {
-    localStorage.setItem("ocms_user", JSON.stringify(user));
+  function handleLogin(user, remember) {
+    const storage = remember ? localStorage : sessionStorage;
+    storage.setItem("ocms_user", JSON.stringify(user));
+    if (remember) sessionStorage.removeItem("ocms_user");
+    else localStorage.removeItem("ocms_user");
     setSigned(user);
     setPage("dashboard");
   }
 
   function handleLogout() {
     localStorage.removeItem("ocms_user");
+    sessionStorage.removeItem("ocms_user");
     localStorage.removeItem("ocms_token");
     setSigned(null);
     setPage("dashboard");
@@ -127,11 +135,7 @@ function Login({ onLogin }) {
 
     setSubmitting(true);
     await new Promise((resolve) => setTimeout(resolve, 350));
-    onLogin(candidate);
-    if (!remember) {
-      // Local demo session is kept only for the current application session.
-      // The existing app uses localStorage, so retain compatibility for this version.
-    }
+    onLogin(candidate, remember);
     setSubmitting(false);
   }
 
