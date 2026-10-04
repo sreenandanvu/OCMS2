@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
   AlertTriangle,
-  ArrowRight,
   Bell,
   BookOpen,
   CalendarDays,
@@ -48,7 +47,7 @@ function StatCard({ icon: Icon, label, value, helper, tone }) {
   );
 }
 
-export default function Dashboard() {
+export default function Dashboard({ onNavigate }) {
   const loggedUser = getLoggedUser();
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
@@ -244,7 +243,7 @@ export default function Dashboard() {
               <h2 className="text-lg font-black text-slate-950">Attendance health</h2>
               <p className="mt-1 text-xs text-slate-500">Keep your attendance comfortably above the required threshold.</p>
             </div>
-            <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("ocms-navigate", { detail: "attendance" }))} className="text-xs font-bold text-emerald-700">
+            <button type="button" onClick={() => onNavigate?.("attendance")} className="text-xs font-bold text-emerald-700">
               View details
             </button>
           </div>
@@ -313,7 +312,7 @@ export default function Dashboard() {
               <h2 className="text-lg font-black text-slate-950">Assignments</h2>
               <p className="mt-1 text-xs text-slate-500">Stay ahead of your next submissions.</p>
             </div>
-            <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("ocms-navigate", { detail: "assignments" }))} className="text-xs font-bold text-violet-700">View all</button>
+            <button type="button" onClick={() => onNavigate?.("assignments")} className="text-xs font-bold text-violet-700">View all</button>
           </div>
           <div className="divide-y divide-slate-100">
             {upcomingAssignments.length ? upcomingAssignments.map((item, index) => (
