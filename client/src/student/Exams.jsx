@@ -83,7 +83,9 @@ export default function Exams() {
   const loggedUser = useMemo(() => {
     try {
       return JSON.parse(
-        localStorage.getItem("ocms_user") || "null"
+        localStorage.getItem("ocms_user") ||
+        sessionStorage.getItem("ocms_user") ||
+        "null"
       );
     } catch {
       return null;
@@ -154,13 +156,25 @@ export default function Exams() {
           );
         }) || null;
 
-      if (!currentStudent) {
-        throw new Error(
-          "Unable to identify your student account."
-        );
-      }
+      /*
+       * Demo/local-login fallback:
+       * The current OCMS login is still using demo accounts, while
+       * the MongoDB database may not contain a matching Student row.
+       * Keep the academic workspace usable by deriving the basic
+       * student identity from the signed-in demo account.
+       */
+      const resolvedStudent =
+        currentStudent || {
+          name: loggedUser?.name || "Student",
+          email: loggedUser?.email || "",
+          rollNo: loggedUser?.rollNo || loggedUser?.registerNo || "",
+          course: loggedUser?.course || "MCA",
+          semester: Number(loggedUser?.semester || 1),
+          section: loggedUser?.section || "A",
+          status: "Active",
+        };
 
-      setStudent(currentStudent);
+      setStudent(resolvedStudent);
       setExams(examData);
       setResults(resultData);
     } catch (err) {
