@@ -1,18 +1,16 @@
-/*
-  Shell layout fixes.
-  Keeps the existing OCMS UI/design; this only supplies the
-  class-specific styles used by Shell.jsx.
-*/
-
 .top-header {
-  height: 82px;
-  background: #fff;
+  height: 76px;
+  background: rgba(255, 255, 255, 0.96);
   border-bottom: 1px solid #e7e9f0;
-  padding: 17px 36px;
+  padding: 14px 32px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(12px);
 }
 
 .header-title {
@@ -22,53 +20,91 @@
 .breadcrumb {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #8a91a1;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  gap: 7px;
+  color: #94a3b8;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .breadcrumb span {
-  color: #c2c6d0;
+  color: #cbd5e1;
 }
 
 .header-title h1 {
-  margin: 3px 0 0;
-  font-size: 25px;
+  margin: 2px 0 0;
+  font-size: 23px;
   line-height: 1.2;
-  font-weight: 700;
-  color: #182033;
+  font-weight: 800;
+  color: #0f172a;
 }
 
-.header-user {
+.header-actions {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-shrink: 0;
 }
 
-.role-pill {
-  background: #f0efff;
-  color: #5e55ef;
-  border-radius: 20px;
-  padding: 9px 14px;
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
+.header-icon-button {
+  width: 38px;
+  height: 38px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #64748b;
+  border-radius: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.18s ease;
+}
+
+.header-icon-button:hover {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.header-divider {
+  width: 1px;
+  height: 28px;
+  background: #e2e8f0;
+}
+
+.header-avatar,
+.shell-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-weight: 800;
 }
 
 .header-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background: #eeecff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 19px;
-  flex-shrink: 0;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.header-avatar-violet,
+.shell-avatar-violet {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.header-avatar-blue,
+.shell-avatar-blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.header-avatar-emerald,
+.shell-avatar-emerald {
+  background: #d1fae5;
+  color: #047857;
 }
 
 .header-user-info {
@@ -77,60 +113,114 @@
 
 .header-user-info strong {
   display: block;
-  color: #293044;
-  font-size: 13px;
-  font-weight: 700;
+  color: #1e293b;
+  font-size: 12px;
+  font-weight: 800;
   white-space: nowrap;
 }
 
 .header-user-info small {
   display: block;
   margin-top: 3px;
-  color: #7c8394;
-  font-size: 11px;
+  color: #94a3b8;
+  font-size: 10px;
   white-space: nowrap;
 }
 
-.profile {
+.shell-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
-
-.profile-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #eeecff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
+  gap: 11px;
+  padding: 4px 7px 25px;
   flex-shrink: 0;
 }
 
-.profile-info {
+.shell-brand-mark {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  box-shadow: 0 8px 18px rgba(79, 70, 229, 0.28);
+}
+
+.shell-brand-name {
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.shell-brand-subtitle {
+  margin-top: 4px;
+  color: #94a3b8;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.shell-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 2px 21px;
+  padding: 11px;
+  border: 1px solid #1e293b;
+  border-radius: 15px;
+  background: #111827;
+}
+
+.shell-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  font-size: 11px;
+}
+
+.shell-profile-copy {
   min-width: 0;
   flex: 1;
 }
 
-.profile-info b {
+.shell-profile-copy strong,
+.shell-profile-copy span {
   display: block;
-  font-size: 13px;
-  color: #293044;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.profile-info small {
-  display: block;
-  color: #788096;
-  font-size: 11px;
-  margin-top: 4px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.shell-profile-copy strong {
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.shell-profile-copy span {
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 10px;
+}
+
+.shell-profile-status {
+  color: #34d399;
+  flex-shrink: 0;
+}
+
+.nav-section-label {
+  margin: 13px 11px 6px;
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .nav-item {
@@ -138,53 +228,164 @@
   border: 0;
   background: transparent;
   text-align: left;
-  padding: 11px 12px;
+  padding: 10px 11px;
   border-radius: 11px;
-  color: #657087;
+  color: #94a3b8;
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 14px;
+  gap: 11px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   flex-shrink: 0;
+  transition: 0.18s ease;
 }
 
 .nav-item:hover {
-  background: #f6f6fa;
-  color: #4f46e5;
+  background: #111827;
+  color: #f8fafc;
 }
 
 .nav-item.active {
-  background: #eeecff;
-  color: #5c52ee;
+  background: #312e81;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: inset 3px 0 0 #a78bfa;
+}
+
+.sidebar-footer-note {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 4px 9px;
+  color: #64748b;
+  font-size: 9px;
   font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .logout-button {
   width: 100%;
-  border: 1px solid #dfe2e9;
-  background: #fff;
-  color: #657087;
+  border: 1px solid #334155;
+  background: transparent;
+  color: #94a3b8;
   text-align: left;
-  padding: 11px 12px;
+  padding: 10px 11px;
   border-radius: 11px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 14px;
+  gap: 11px;
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
+  transition: 0.18s ease;
 }
 
 .logout-button:hover {
-  background: #f7f7fa;
+  background: #111827;
+  color: #fff;
+  border-color: #475569;
 }
 
-@media (max-width: 900px) {
-  .top-header {
-    padding: 17px 20px;
+.sidebar {
+  width: 262px;
+  background: #0b1120;
+  border-right: 1px solid #1e293b;
+  padding: 18px 13px;
+}
+
+.main {
+  margin-left: 262px;
+  width: calc(100% - 262px);
+  min-width: 0;
+}
+
+.content {
+  padding: 26px 30px 36px;
+  max-width: none;
+}
+
+@media (max-width: 1100px) {
+  .sidebar {
+    width: 230px;
   }
 
-  .header-user-info {
+  .main {
+    margin-left: 230px;
+    width: calc(100% - 230px);
+  }
+
+  .content {
+    padding: 22px;
+  }
+}
+
+@media (max-width: 820px) {
+  .sidebar {
+    width: 82px;
+    padding: 15px 10px;
+  }
+
+  .main {
+    margin-left: 82px;
+    width: calc(100% - 82px);
+  }
+
+  .shell-brand {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .shell-brand > div:last-child,
+  .shell-profile-copy,
+  .shell-profile-status,
+  .workspace,
+  .nav-section-label,
+  .nav-item span,
+  .sidebar-footer-note span,
+  .logout-button span {
     display: none;
+  }
+
+  .shell-profile {
+    justify-content: center;
+    padding: 8px;
+  }
+
+  .nav-item,
+  .logout-button {
+    justify-content: center;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .top-header {
+    padding: 13px 18px;
+  }
+
+  .header-user-info,
+  .header-divider {
+    display: none;
+  }
+
+  .content {
+    padding: 18px 14px 28px;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-title h1 {
+    font-size: 18px;
+  }
+
+  .breadcrumb {
+    font-size: 9px;
+  }
+
+  .header-icon-button {
+    width: 35px;
+    height: 35px;
   }
 }
