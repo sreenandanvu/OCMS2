@@ -91,6 +91,7 @@ const ROLE_INFO = {
 
 export default function Shell({ user, page, onNavigate, onLogout, children }) {
   const navigation = NAVIGATION[user?.role] || [];
+  const [search, setSearch] = React.useState("");
   const role = ROLE_INFO[user?.role] || { label: "User", icon: UserRound, accent: "violet" };
   const RoleIcon = role.icon;
   const currentPage = navigation.find(([key]) => key === page)?.[1] || "Dashboard";
@@ -178,6 +179,29 @@ export default function Shell({ user, page, onNavigate, onLogout, children }) {
               OCMS <span>/</span> {role.label}
             </div>
             <h1>{currentPage}</h1>
+          </div>
+
+          <div className="header-search">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m21 21-4.35-4.35m1.35-5.15a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" />
+            </svg>
+            <input
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter") return;
+                const value = search.trim().toLowerCase();
+                const match = navigation.find(([key, label]) =>
+                  label.toLowerCase().includes(value) || key.includes(value)
+                );
+                if (match) {
+                  onNavigate(match[0]);
+                  setSearch("");
+                }
+              }}
+              placeholder="Search students, faculty, courses..."
+              aria-label="Search OCMS"
+            />
           </div>
 
           <div className="header-actions">
