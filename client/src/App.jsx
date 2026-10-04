@@ -165,7 +165,7 @@ function Login({ onLogin }) {
   return (
     <div className="min-h-screen bg-slate-100 px-4 py-5 sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100vh-2.5rem)] max-w-6xl overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-2xl shadow-slate-200/60 lg:grid-cols-[1.05fr_0.95fr]">
-        <section className={\`relative hidden overflow-hidden bg-gradient-to-br p-10 text-white lg:flex lg:flex-col \${tone.panel}\`}>
+        <section className={`relative hidden overflow-hidden bg-gradient-to-br p-10 text-white lg:flex lg:flex-col ${tone.panel}`}>
           <div className="absolute -right-28 -top-28 h-72 w-72 rounded-full bg-white/10 blur-2xl" />
           <div className="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-white/10 blur-3xl" />
 
@@ -246,15 +246,15 @@ function Login({ onLogin }) {
                     key={role}
                     type="button"
                     onClick={() => selectRole(role)}
-                    className={\`group rounded-2xl border px-3 py-3.5 text-left transition \${
+                    className={`group rounded-2xl border px-3 py-3.5 text-left transition ${
                       active
                         ? "border-slate-900 bg-slate-900 text-white shadow-lg"
                         : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                    }\`}
+                    }`}
                   >
-                    <div className={\`mb-2 flex h-8 w-8 items-center justify-center rounded-xl \${
+                    <div className={`mb-2 flex h-8 w-8 items-center justify-center rounded-xl ${
                       active ? "bg-white/10" : "bg-slate-100"
-                    }\`}>
+                    }`}>
                       <Icon size={16} />
                     </div>
                     <p className="text-xs font-bold">{item.title}</p>
@@ -264,7 +264,7 @@ function Login({ onLogin }) {
             </div>
 
             <div className="mt-5 flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-              <div className={\`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl \${tone.soft}\`}>
+              <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${tone.soft}`}>
                 <ActiveIcon size={20} />
               </div>
               <div className="min-w-0">
@@ -287,7 +287,7 @@ function Login({ onLogin }) {
                       setEmail(e.target.value);
                       setError("");
                     }}
-                    className={\`w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-10 pr-4 text-sm text-slate-900 outline-none placeholder:text-slate-400 \${tone.ring} focus:border-slate-300 focus:ring-2\`}
+                    className={`w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-10 pr-4 text-sm text-slate-900 outline-none placeholder:text-slate-400 ${tone.ring} focus:border-slate-300 focus:ring-2`}
                     placeholder="name@college.edu"
                     type="email"
                     autoComplete="email"
@@ -308,7 +308,7 @@ function Login({ onLogin }) {
                       setPassword(e.target.value);
                       setError("");
                     }}
-                    className={\`w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-10 pr-12 text-sm text-slate-900 outline-none \${tone.ring} focus:border-slate-300 focus:ring-2\`}
+                    className={`w-full rounded-xl border border-slate-200 bg-white py-3.5 pl-10 pr-12 text-sm text-slate-900 outline-none ${tone.ring} focus:border-slate-300 focus:ring-2`}
                     placeholder="Enter your password"
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
@@ -353,9 +353,9 @@ function Login({ onLogin }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className={\`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-sm font-bold text-white shadow-lg transition disabled:cursor-not-allowed disabled:opacity-60 \${tone.button}\`}
+                className={`flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3.5 text-sm font-bold text-white shadow-lg transition disabled:cursor-not-allowed disabled:opacity-60 ${tone.button}`}
               >
-                {submitting ? "Signing you in..." : \`Continue as \${activeUser.label}\`}
+                {submitting ? "Signing you in..." : `Continue as ${activeUser.label}`}
                 {!submitting && <ArrowRight size={17} />}
               </button>
             </form>
