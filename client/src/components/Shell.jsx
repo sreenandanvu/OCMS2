@@ -126,7 +126,7 @@ export default function Shell({ user, page, onNavigate, onLogout, children }) {
         </div>
 
         <div className="shell-profile">
-          <div className={\`shell-avatar shell-avatar-\${role.accent}\`}>{initials || <RoleIcon size={18} />}</div>
+          <div className={`shell-avatar shell-avatar-${role.accent}`}>{initials || <RoleIcon size={18} />}</div>
           <div className="shell-profile-copy">
             <strong>{user?.name || role.label}</strong>
             <span>{role.label}</span>
@@ -190,7 +190,7 @@ export default function Shell({ user, page, onNavigate, onLogout, children }) {
               <Bell size={18} />
             </button>
             <div className="header-divider" />
-            <div className={\`header-avatar header-avatar-\${role.accent}\`}>{initials || <RoleIcon size={18} />}</div>
+            <div className={`header-avatar header-avatar-${role.accent}`}>{initials || <RoleIcon size={18} />}</div>
             <div className="header-user-info">
               <strong>{user?.name || role.label}</strong>
               <small>{user?.email || ""}</small>
