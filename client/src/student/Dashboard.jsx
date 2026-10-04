@@ -16,7 +16,11 @@ import { get } from "../services/api";
 
 function getLoggedUser() {
   try {
-    return JSON.parse(localStorage.getItem("ocms_user") || "null");
+    return JSON.parse(
+      localStorage.getItem("ocms_user") ||
+      sessionStorage.getItem("ocms_user") ||
+      "null"
+    );
   } catch {
     return null;
   }
