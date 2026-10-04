@@ -23,6 +23,13 @@ function formatDate(value) {
 
 export default function Dashboard({ onNavigate }) {
   const [students, setStudents] = useState([]);
+  const facultyUser = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("ocms_user") || sessionStorage.getItem("ocms_user") || "null");
+    } catch {
+      return null;
+    }
+  })();
   const [assignments, setAssignments] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [exams, setExams] = useState([]);
@@ -33,7 +40,9 @@ export default function Dashboard({ onNavigate }) {
   async function loadDashboard(isRefresh = false) {
     isRefresh ? setRefreshing(true) : setLoading(true);
     const requests = await Promise.allSettled([
-      get("/students"),
+      facultyUser?.email
+        ? get(`/faculty/students?facultyEmail=${encodeURIComponent(facultyUser.email)}`)
+        : get("/students"),
       get("/assignments"),
       get("/attendance"),
       get("/exams"),
