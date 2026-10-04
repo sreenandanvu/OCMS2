@@ -8,10 +8,10 @@ import Results from "./Results";
 import Notices from "./Notices";
 import Performance from "./Performance";
 
-export default function FacultyPage({ page }) {
+export default function FacultyPage({ page, onNavigate }) {
   switch (page) {
     case "dashboard":
-      return <Dashboard />;
+      return <Dashboard onNavigate={onNavigate} />;
 
     case "students":
       return <Students />;
@@ -32,6 +32,6 @@ export default function FacultyPage({ page }) {
       return <Performance />;
 
     default:
-      return <Dashboard />;
+      return <Dashboard onNavigate={onNavigate} />;
   }
 }
