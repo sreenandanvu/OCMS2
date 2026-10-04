@@ -39,7 +39,7 @@ function StatCard({ icon: Icon, label, value, helper, onClick, tone = "violet" }
       className="group rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg"
     >
       <div className="flex items-start justify-between gap-3">
-        <div className={\`flex h-11 w-11 items-center justify-center rounded-xl \${tones[tone]}\`}>
+        <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${tones[tone]}`}>
           <Icon size={20} />
         </div>
         <ArrowRight size={16} className="text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-slate-500" />
@@ -211,7 +211,7 @@ export default function AdminDashboard({ onNavigate }) {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard icon={Users} label="Students" value={dashboard?.students ?? students.length} helper="Enrolled student records" tone="violet" onClick={() => onNavigate?.("students")} />
         <StatCard icon={GraduationCap} label="Faculty" value={dashboard?.faculty ?? faculty.length} helper="Teaching staff records" tone="blue" onClick={() => onNavigate?.("faculty")} />
-        <StatCard icon={ClipboardCheck} label="Attendance" value={\`\${attendancePercentage}%\`} helper="Across recorded sessions" tone="emerald" onClick={() => onNavigate?.("attendance")} />
+        <StatCard icon={ClipboardCheck} label="Attendance" value={`${attendancePercentage}%`} helper="Across recorded sessions" tone="emerald" onClick={() => onNavigate?.("attendance")} />
         <StatCard icon={Activity} label="Attention needed" value={lowAttendanceCount} helper="Students below 75% attendance" tone="amber" onClick={() => onNavigate?.("reports")} />
       </div>
 
