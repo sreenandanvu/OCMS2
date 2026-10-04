@@ -52,6 +52,7 @@ export default function Dashboard({ onNavigate }) {
   const [assignments, setAssignments] = useState([]);
   const [attendance, setAttendance] = useState([]);
   const [exams, setExams] = useState([]);
+  const [results, setResults] = useState([]);
   const [notices, setNotices] = useState([]);
   const [timetable, setTimetable] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,6 +68,7 @@ export default function Dashboard({ onNavigate }) {
       get("/assignments"),
       get("/attendance"),
       get("/exams"),
+      get("/results"),
       get("/notices"),
       get("/timetable"),
     ]);
@@ -75,8 +77,9 @@ export default function Dashboard({ onNavigate }) {
     if (requests[1].status === "fulfilled") setAssignments(parseArray(requests[1].value, ["assignments"]));
     if (requests[2].status === "fulfilled") setAttendance(parseArray(requests[2].value, ["attendance", "records"]));
     if (requests[3].status === "fulfilled") setExams(parseArray(requests[3].value, ["exams", "examinations"]));
-    if (requests[4].status === "fulfilled") setNotices(parseArray(requests[4].value, ["notices"]));
-    if (requests[5].status === "fulfilled") setTimetable(parseArray(requests[5].value, ["timetable"]));
+    if (requests[4].status === "fulfilled") setResults(parseArray(requests[4].value, ["results"]));
+    if (requests[5].status === "fulfilled") setNotices(parseArray(requests[5].value, ["notices"]));
+    if (requests[6].status === "fulfilled") setTimetable(parseArray(requests[6].value, ["timetable"]));
 
     setLoading(false);
     setRefreshing(false);
@@ -132,6 +135,15 @@ export default function Dashboard({ onNavigate }) {
         .sort((a, b) => new Date(a.date) - new Date(b.date))
         .slice(0, 3),
     [exams]
+  );
+
+  const recentResults = useMemo(
+    () =>
+      [...results]
+        .filter((item) => item.published !== false)
+        .sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0))
+        .slice(0, 4),
+    [results]
   );
 
   const recentNotices = useMemo(
